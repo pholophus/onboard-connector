@@ -1,0 +1,79 @@
+import "@fluencelabs/aqua-lib/builtin.aqua" 
+
+data OnboardInput:
+    banner: string
+    wallet: string
+    arcade: string
+    screenshot: []string
+    gameName: string
+    description: string
+    developer: string
+    youtube: string
+    facebook: string
+    instagram: string
+    twitter: string
+    linkedin: string
+    genre: []string
+    gameURL: string
+    arcadeSize: string
+
+data StatusMessage:
+    status_code: f32
+    success: bool
+    message: string 
+
+data ArcadeDetail:
+    game_url: string
+    arcade_image: string
+    x: f32
+    y: f32
+    width: f32
+    location_id: string
+    status: StatusMessage
+
+data LocationDetail:
+    buildingId: string
+    locationId: string
+    status: StatusMessage
+    wallet: string
+
+
+service IOnboardingService:
+    -- list_of_games(walletAddress: string) -> []ArcadeDetail
+    get_location_game(onboardInput: OnboardInput) -> ArcadeDetail
+    insert_arcade_building(arcade_detail: ArcadeDetail) -> LocationDetail
+    update_mongodb_location(locationDetail: LocationDetail) -> StatusMessage
+
+const PEER ?= "12D3KooWDTNLoW2YKUvCcnhdAUyhhm6m9EKLvzstDRxXrbqwentc"
+const RELAY ?= "12D3KooWEFFCZnar1cUJQ3rMWjvPQg6yMV2aXWs2DkJNSRbduBWn"
+const SERVICE_ID ?= "onboardingservice"
+
+func onboard_game(onboardInput: OnboardInput) -> ArcadeDetail:
+
+    -- returnData: ArcadeDetail
+
+    on PEER via RELAY:
+        IOnboardingService SERVICE_ID
+        
+        <- IOnboardingService.get_location_game(onboardInput)
+        
+        
+        -- if arcadeDetail.status.success == true:
+        --     locationDetail <- IOnboardingService.insert_arcade_building(arcadeDetail)
+            
+        --     if locationDetail.status.success == true: 
+        --         returnData <<- IOnboardingService.update_mongodb_location(locationDetail)
+            
+        --     if locationDetail.status.success == false: 
+        --         returnData <<- locationDetail.status
+
+    --     if arcadeDetail.status.success == false:
+    --          returnData <<- arcadeDetail.status   
+           
+    -- <- returnData
+            
+
+    
+
+    
+
